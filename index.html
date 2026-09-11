@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>GPU Cheatsheet</title>
+  <meta name="description" content="按厂商、用途与 GPU 系列检索规格，并横向对比最多四颗芯片。">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#results">跳到查询结果</a>
+
+  <header class="topbar">
+    <div class="shell nav-wrap">
+      <a class="brand" href="#top" aria-label="GPU 规格库首页">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-text">GPU <strong>CHEATSHEET</strong></span>
+      </a>
+      <nav aria-label="主导航">
+        <a href="#browse">查询</a>
+        <button class="nav-compare" id="navCompare" type="button">对比 <span id="navCompareCount">0</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-accent hero-accent-one" aria-hidden="true"></div>
+      <div class="hero-accent hero-accent-two" aria-hidden="true"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow"><span></span>GPU 规格资料库</p>
+        <h1 id="heroTitle">找到目标 GPU。<br><em>比较关键规格。</em></h1>
+        <p class="hero-copy">覆盖桌面消费级、笔记本、专业可视化与数据中心产品。按系列浏览，或直接搜索型号、芯片代号、架构和显存规格。</p>
+        <div class="hero-search">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+          <label class="sr-only" for="searchInput">搜索 GPU</label>
+          <input id="searchInput" type="search" autocomplete="off" placeholder="搜索 RTX 5090、Navi 48、GDDR7…">
+          <kbd>/</kbd>
+          <button id="clearSearch" type="button" aria-label="清空搜索">×</button>
+        </div>
+        <div class="hero-stats" aria-label="数据概览">
+          <div><strong id="totalCount">—</strong><span>颗 GPU</span></div>
+          <div><strong id="seriesCount">—</strong><span>个系列</span></div>
+          <div><strong id="vendorCount">—</strong><span>家厂商</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog" id="browse" aria-labelledby="catalogTitle">
+      <div class="shell">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow dark"><span></span>浏览数据库</p>
+            <h2 id="catalogTitle">GPU 查询</h2>
+          </div>
+          <button class="share-button" id="shareButton" type="button" title="复制当前筛选条件的链接">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 12h8m-1-4 4 4-4 4M5 5h6M5 19h6M5 5v14"/></svg>
+            复制筛选链接
+          </button>
+        </div>
+
+        <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="GPU 用途">
+          <button type="button" role="tab" aria-selected="true" data-category="全部">全部</button>
+          <button type="button" role="tab" aria-selected="false" data-category="桌面消费级">桌面消费级</button>
+          <button type="button" role="tab" aria-selected="false" data-category="笔记本">笔记本</button>
+          <button type="button" role="tab" aria-selected="false" data-category="专业可视化">专业可视化</button>
+          <button type="button" role="tab" aria-selected="false" data-category="数据中心">数据中心</button>
+        </div>
+
+        <div class="filter-panel" aria-label="筛选条件">
+          <div class="filter-block vendor-block">
+            <span class="filter-label">厂商</span>
+            <div class="vendor-chips" id="vendorChips">
+              <button type="button" class="active" data-vendor="全部">全部</button>
+              <button type="button" data-vendor="NVIDIA">NVIDIA</button>
+              <button type="button" data-vendor="AMD">AMD</button>
+              <button type="button" data-vendor="Intel">Intel</button>
+            </div>
+          </div>
+          <label class="select-field">
+            <span>系列</span>
+            <select id="seriesSelect"><option value="全部">全部系列</option></select>
+          </label>
+          <label class="select-field">
+            <span>排序</span>
+            <select id="sortSelect">
+              <option value="default">系列与型号</option>
+              <option value="launch-desc">上市时间：由新到旧</option>
+              <option value="memory-desc">显存：由高到低</option>
+              <option value="tdp-desc">功耗：由高到低</option>
+              <option value="bandwidth-desc">带宽：由高到低</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="results-toolbar">
+          <p id="resultSummary" aria-live="polite">正在载入数据…</p>
+          <button id="resetFilters" type="button">重置筛选</button>
+        </div>
+
+        <div class="gpu-grid" id="results" aria-live="polite"></div>
+        <div class="empty-state" id="emptyState" hidden>
+          <span aria-hidden="true">0</span>
+          <h3>没有找到匹配的 GPU</h3>
+          <p>试试缩短关键词，或清除厂商和系列筛选。</p>
+          <button id="emptyReset" type="button">重置全部条件</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="source-note">
+      <div class="shell source-note-inner">
+        <div>
+          <p class="eyebrow dark"><span></span>关于数据</p>
+          <h2>从 Excel 规格表整理</h2>
+        </div>
+        <p>网页保留源表中的产品分类和规格值。黄色标记代表源表注明的“不确定”项目；空白或公式错误不做推断，统一显示为“—”。性能指数仅在源表存在精确型号匹配时显示。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-inner">
+      <span>GPU CHEATSHEET</span>
+      <span id="sourceFile"></span>
+    </div>
+  </footer>
+
+  <aside class="compare-tray" id="compareTray" aria-label="已选对比 GPU" hidden>
+    <div class="shell compare-tray-inner">
+      <div class="compare-summary">
+        <span class="compare-number" id="compareCount">0</span>
+        <div><strong>已加入对比</strong><small>最多选择 4 颗 GPU</small></div>
+      </div>
+      <div class="compare-chips" id="compareChips"></div>
+      <div class="compare-actions">
+        <button class="text-button" id="clearCompare" type="button">清空</button>
+        <button class="primary-button" id="openCompare" type="button">开始对比</button>
+      </div>
+    </div>
+  </aside>
+
+  <dialog class="detail-dialog" id="detailDialog" aria-labelledby="detailTitle">
+    <button class="dialog-close" data-close-dialog="detailDialog" type="button" aria-label="关闭">×</button>
+    <div id="detailContent"></div>
+  </dialog>
+
+  <dialog class="compare-dialog" id="compareDialog" aria-labelledby="compareTitle">
+    <div class="compare-dialog-head">
+      <div>
+        <p class="eyebrow dark"><span></span>横向规格</p>
+        <h2 id="compareTitle">GPU 对比</h2>
+      </div>
+      <button class="dialog-close inline" data-close-dialog="compareDialog" type="button" aria-label="关闭">×</button>
+    </div>
+    <div class="compare-table-wrap" id="compareTableWrap"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
