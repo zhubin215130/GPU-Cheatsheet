@@ -116,6 +116,7 @@
   }
 
   function statusMarkup(record) {
+    if (record.status === "verified") return '<span class="status-label verified">官网核对</span>';
     if (record.status === "uncertain") return '<span class="status-label">源表：不确定</span>';
     if (record.status === "eol") return '<span class="status-label eol">源表：EOL</span>';
     return "";
@@ -176,7 +177,11 @@
       if (state.series !== "全部" && record.series !== state.series) return false;
       return terms.every(term => record.__search.includes(term));
     });
-    const numeric = key => record => typeof record[key] === "number" ? record[key] : -Infinity;
+    const numeric = key => record => {
+      if (typeof record[key] === "number") return record[key];
+      const numbers = String(record[key] ?? "").match(/\d+(?:\.\d+)?/g)?.map(Number) || [];
+      return numbers.length ? Math.max(...numbers) : -Infinity;
+    };
     if (state.sort === "launch-desc") filtered.sort((a, b) => String(b.launchDate || "").localeCompare(String(a.launchDate || "")) || collator.compare(a.name, b.name));
     else if (state.sort === "memory-desc") filtered.sort((a, b) => numeric("memoryGb")(b) - numeric("memoryGb")(a) || collator.compare(a.name, b.name));
     else if (state.sort === "tdp-desc") filtered.sort((a, b) => numeric("tdpW")(b) - numeric("tdpW")(a) || collator.compare(a.name, b.name));
@@ -280,7 +285,11 @@
       ? '<div class="source-warning"><strong>源表标记为不确定。</strong> 该条目可能是预测、待确认或规格尚未补全，请结合最新正式资料使用。</div>'
       : record.status === "eol" ? '<div class="source-warning"><strong>源表标记为 EOL。</strong> 该产品可能已进入生命周期末期。</div>' : "";
     const issues = record.sourceIssues?.length
-      ? `<div class="source-warning"><strong>源表存在公式错误。</strong> ${escapeHtml(record.sourceIssues.join("；"))}，网页未对该值进行推断。</div>` : "";
+      ? `<div class="source-warning"><strong>源表异常记录。</strong> ${escapeHtml(record.sourceIssues.join("；"))}</div>` : "";
+    const verification = record.verificationNote
+      ? `<div class="verification-note"><strong>校对说明。</strong> ${escapeHtml(record.verificationNote)}</div>` : "";
+    const sourceLink = record.sourceUrl
+      ? ` · <a href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(record.sourceLabel || "官方规格来源")}</a>` : "";
     els.detailContent.innerHTML = `
       <div class="detail-hero">
         <span class="vendor-label">${escapeHtml(record.vendor)} · ${escapeHtml(record.category)}</span>
@@ -289,8 +298,8 @@
       </div>
       <div class="detail-body">
         <div class="detail-summary">${summaryItems(record).map(([label, val]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(val)}</strong></div>`).join("")}</div>
-        ${groups}${warning}${issues}
-        <p class="source-locator">数据位置：${escapeHtml(record.sourceSheet)} · 第 ${escapeHtml(record.sourceRow)} 行</p>
+        ${groups}${warning}${verification}${issues}
+        <p class="source-locator">Excel 参考位置：${escapeHtml(record.sourceSheet)} · 第 ${escapeHtml(record.sourceRow)} 行${sourceLink}</p>
       </div>`;
     showDialog(els.detailDialog);
   }

@@ -107,6 +107,7 @@ button { cursor: pointer; }
 .vendor-label { color: #777; font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
 .status-label { padding: 4px 7px; color: #3d3300; background: var(--warning); font-size: 10px; font-weight: 800; }
 .status-label.eol { color: #555; background: #e4e4e4; }
+.status-label.verified { color: #294400; background: #dff5b9; border: 1px solid #9bce45; }
 .gpu-card h3 { margin: 17px 0 7px; color: #111; font-size: 24px; line-height: 1.12; letter-spacing: -.025em; }
 .series-line { min-height: 20px; margin: 0; color: var(--green-dark); font-size: 12px; font-weight: 800; }
 .card-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin: 23px 0 20px; background: #ddd; border: 1px solid #ddd; }
@@ -175,7 +176,9 @@ dialog::backdrop { background: rgba(0,0,0,.74); backdrop-filter: blur(3px); }
 .spec-item { min-width: 0; padding: 14px 15px; background: #fff; }
 .spec-item strong { display: block; overflow-wrap: anywhere; font-size: 13px; font-weight: 650; }
 .source-warning { margin-top: 26px; padding: 14px 16px; color: #5b4b00; background: #fff6c7; border-left: 4px solid var(--warning); font-size: 12px; line-height: 1.6; }
+.verification-note { margin-top: 26px; padding: 14px 16px; color: #294400; background: #f1f9e3; border-left: 4px solid var(--green); font-size: 12px; line-height: 1.6; }
 .source-locator { margin-top: 20px; color: #888; font-size: 11px; }
+.source-locator a { color: var(--green-dark); font-weight: 700; text-underline-offset: 3px; }
 
 .compare-dialog { width: min(1180px, calc(100vw - 32px)); max-width: none; height: min(850px, calc(100vh - 32px)); padding: 0; overflow: hidden; }
 .compare-dialog-head { height: 116px; display: flex; align-items: center; justify-content: space-between; padding: 24px 30px; border-bottom: 1px solid #ddd; }
