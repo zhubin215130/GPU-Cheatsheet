@@ -7,4 +7,4 @@ Interactive GPU specification search and comparison site generated from the supp
 - Compare up to four GPUs
 - Responsive static site with no external runtime dependencies
 
-The repository is private. The deployed GitHub Pages site is intended to be publicly accessible.
+The primary source repository is private. A separate public deployment mirror contains the static files required for the publicly accessible GitHub Pages site.
