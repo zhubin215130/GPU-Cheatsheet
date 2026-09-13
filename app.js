@@ -235,7 +235,7 @@
   function loadCompare() {
     try {
       const ids = JSON.parse(localStorage.getItem("gpuCompare") || "[]");
-      return Array.isArray(ids) ? ids.filter(id => byId.has(id)).slice(0, 4) : [];
+      return Array.isArray(ids) ? ids.filter(id => byId.has(id)).slice(0, 6) : [];
     } catch (_) { return []; }
   }
 
@@ -244,8 +244,8 @@
   }
 
   function toggleCompare(id, checked) {
-    if (checked && state.compare.size >= 4 && !state.compare.has(id)) {
-      showToast("最多同时对比 4 颗 GPU");
+    if (checked && state.compare.size >= 6 && !state.compare.has(id)) {
+      showToast("最多同时对比 6 颗 GPU");
       renderResults();
       return;
     }
@@ -288,8 +288,11 @@
       ? `<div class="source-warning"><strong>源表异常记录。</strong> ${escapeHtml(record.sourceIssues.join("；"))}</div>` : "";
     const verification = record.verificationNote
       ? `<div class="verification-note"><strong>校对说明。</strong> ${escapeHtml(record.verificationNote)}</div>` : "";
-    const sourceLink = record.sourceUrl
-      ? ` · <a href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(record.sourceLabel || "官方规格来源")}</a>` : "";
+    const sourceLinks = [
+      record.sourceUrl ? `<a href="${escapeHtml(record.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(record.sourceLabel || "官方规格来源")}</a>` : "",
+      record.chipSourceUrl ? `<a href="${escapeHtml(record.chipSourceUrl)}" target="_blank" rel="noopener">${escapeHtml(record.chipSourceLabel || "GPU 芯片来源")}</a>` : "",
+    ].filter(Boolean);
+    const sourceLink = sourceLinks.length ? ` · ${sourceLinks.join(" · ")}` : "";
     els.detailContent.innerHTML = `
       <div class="detail-hero">
         <span class="vendor-label">${escapeHtml(record.vendor)} · ${escapeHtml(record.category)}</span>
