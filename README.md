@@ -7,10 +7,17 @@ Interactive GPU specification search and comparison site generated from the supp
 - Compare up to six GPUs
 - Responsive static site with no external runtime dependencies
 
-The workbook is the primary data source. Conflicting NVIDIA laptop fields are
-cross-checked against NVIDIA's official GeForce Laptop GPU specifications and
-annotated in the product detail view. Missing RTX 50 Laptop GPU die identifiers
-are filled from Wikipedia's NVIDIA GPU list, with the source linked in each
-affected detail view.
+The workbook provides the original dataset. NVIDIA specifications that differed
+from online references were corrected using NVIDIA's official product pages
+where available. Wikipedia's NVIDIA GPU list supplements release dates, GPU die
+identifiers, transistor counts, die sizes, and core counts that are not listed
+on the official comparison pages. Source notes are shown in affected laptop GPU
+detail views.
+
+Reference pages:
+
+- https://www.nvidia.com/en-us/geforce/laptops/compare/
+- https://www.nvidia.com/en-us/geforce/laptops/40-series/
+- https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units
 
 Public site: https://zhubin215130.github.io/GPU-Cheatsheet/
